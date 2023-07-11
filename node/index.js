@@ -11,15 +11,27 @@ const config = {
 
 const connection = mysql.createConnection(config);
 
+const createTable =
+    "CREATE TABLE IF NOT EXISTS people (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+connection.query(createTable);
+
+let sql = `INSERT INTO people(name) values ('Rodrigo')`;
+connection.query(sql);
 
 app.get("/", (req, res) => {
     connection.query("SELECT * FROM people", (err, result, fields) => {
         if (err) throw err;
-        res.send(`
+
+        let html = `
             <h1>Full Cycle Rocks!</h1>
             <br/>
-            <pre>${JSON.stringify(result, 2, null)}</pre>
-        `);
+        `;
+        let list = "";
+        result.forEach((n) => (list += "<li>" + n.name + "</li>"));
+        html += "<ul>";
+        html += list;
+        html += "</ul>";
+        res.send(html);
     });
 });
 
