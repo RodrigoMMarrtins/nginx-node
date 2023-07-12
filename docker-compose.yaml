@@ -22,6 +22,8 @@ services:
       context: node 
     networks:
       - node-network
+    command: node index.js
+    entrypoint: wait-for db:3306 -t 40 -- ./start.sh
     volumes:
       - ./node:/usr/src/app
       - /usr/src/app/node_modules
@@ -34,7 +36,6 @@ services:
       - DB_DATABASE=nodedb
     depends_on:
       - db
-    command: node index.js
 
   
   db:
